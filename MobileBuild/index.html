@@ -105,37 +105,10 @@
 			"/js/Radolo.Common.js/radoloOfflineCache.js",
 			"/js/Radolo.Common.js/radoloRouter.js"
 			];
-            var appCacheSetup = function () {
-				try {
-		$.radoloRouter.useAppCache = true;
-					$.radoloOfflineCache.changesAvailable.done(function () {
-						$.radoloDialog.showAsWindow({
-							title: "Updating!",
-							message: "It looks like this app has an update. Please hang on while we download it!",
-							buttons: []
-						});
-					});
-					$.radoloOfflineCache.noChanges.done(function () {
-						$.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
-					});
-					$.radoloOfflineCache.changesDownloaded.done(function () {
-						$.radoloDialog.closeWindow();
-						$.radoloDialog.showAsWindow({
-							title: "Update Complete!",
-							message: "Your update has been downloaded. Please hang on while we refresh!",
-							buttons: [{
-								title: "OK",
-								callback: function () {
-									//switch our base back so we can refresh to the phone
-									window.location.href = phoneBase;
-								}
-							}]
-						});
-					});
-				} catch (e) {
-					t.textContent = e;
-				}
-			};
+			
+			
+		
+            
 			var loadScript = function (index) {
 				var s = document.createElement('script');
 				s.type = 'text/javascript';
@@ -144,7 +117,7 @@
 					if (index + 1 < arr.length) {
 						loadScript(index + 1);
 					} else {
-						appCacheSetup();
+						$.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
 					}
 				};
 				document.head.appendChild(s);
