@@ -29,17 +29,41 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
     <title>Member Management</title>
  
+    <base />
 </head>
 <body>
-
-    <div class="app">
-        <div class="loading">
-        </div>
-        <h1 id="message">Connecting to ADA</h1>
-    </div>
     <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <div id="swappableContentOuter">
+            <div class="app">
+                <div class="loading">
+                </div>
+                <h1 id="message">Connecting to ADA</h1>
+            </div>
+    
+    
     <script type="text/javascript">
+        //IE hates the console unless it is open...
+	if (typeof (console) === 'undefined' || !console || !window.console) {
+		console = {
+			warn: function () { },
+			log: function () { }
+		};
+	}
+	if (!console.warn) {
+		console.warn = function () { };
+	}
+	if (!console.log) {
+		console.log = function () { };
+	}
+	if (typeof (showElapsedTime) === 'undefined') {
+		var showElapsedTime = function (title) {
+			startTime = typeof startTime === 'undefined' ? new Date().getTime() : startTime;
+			var elapsed = (new Date().getTime() - startTime);
+			var msg = (elapsed / 1000) + " : " + title;
+			console.log(msg);
+		};
+	}
+	
         var onDeviceReady = function () {
                
             var conn = navigator.connection.type;
@@ -59,17 +83,80 @@
                 //we did not have a network connection so just get out
                 return;
             };
+            
+            var baseURL = "";
 
             //production
-            window.location.href = "http://aptifymobilememberdev.radolo.com/Default.aspx";
+            // baseURL = ""
 
             //development
-           // window.location.href = "https://asaemobilemember.radolo.com/Default.aspx";
+            baseURL = "http://aptifymobilememberdev.radolo.com";
+            
+            var base = document.getElementsByTagName('base')[0];
+            var phoneBase = base.href;
+            
+            base.href = baseURL;
+            
+            var arr = ["/Kendo/js/jquery.min.js",
+			"/Kendo/js/kendo.all.min.js",
+			"/js/Radolo.Common.js/pubsub.js",
+			"/js/Radolo.Common.js/radoloDialog.js",
+			"/js/Radolo.Common.js/radoloCommon.js",
+			"/js/Radolo.Common.js/radoloOfflineCache.js",
+			"/js/Radolo.Common.js/radoloRouter.js"
+			];
+            var appCacheSetup = function () {
+				try {
+		$.radoloRouter.useAppCache = true;
+					$.radoloOfflineCache.changesAvailable.done(function () {
+						$.radoloDialog.showAsWindow({
+							title: "Updating!",
+							message: "It looks like this app has an update. Please hang on while we download it!",
+							buttons: []
+						});
+					});
+					$.radoloOfflineCache.noChanges.done(function () {
+						$.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
+					});
+					$.radoloOfflineCache.changesDownloaded.done(function () {
+						$.radoloDialog.closeWindow();
+						$.radoloDialog.showAsWindow({
+							title: "Update Complete!",
+							message: "Your update has been downloaded. Please hang on while we refresh!",
+							buttons: [{
+								title: "OK",
+								callback: function () {
+									//switch our base back so we can refresh to the phone
+									window.location.href = phoneBase;
+								}
+							}]
+						});
+					});
+				} catch (e) {
+					t.textContent = e;
+				}
+			};
+			var loadScript = function (index) {
+				var s = document.createElement('script');
+				s.type = 'text/javascript';
+				s.async = false;
+				s.onload = function () {
+					if (index + 1 < arr.length) {
+						loadScript(index + 1);
+					} else {
+						appCacheSetup();
+					}
+				};
+				document.head.appendChild(s);
+				s.src = arr[index];
+			};
+			loadScript(0);
         };
 
         document.addEventListener("deviceready", onDeviceReady, false);
 
-        app.initialize();
+        
     </script>
+    </div>
 </body>
 </html>
