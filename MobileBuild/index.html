@@ -113,7 +113,7 @@
             "/js/customAnimations.js",
             "/js/Aptify.Mobile.Member.API.js",
             "/js/Aptify.Mobile.Member.Helper.js",
-            "https://www.google.com/jsapi"
+            "/js/GoogleFeedApi.js"
 			];
 			
 			
@@ -125,7 +125,7 @@
 				s.async = false;
 				s.onload = function () {
 					if (index + 1 < arr.length) {
-						
+						alert(arr[index]);
 						loadScript(index + 1);
 					} else {
 						$.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
