@@ -33,6 +33,22 @@
 </head>
 <body>
     <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript">
+        var onNotificationAPN = function (event) {
+            if (event.alert) {
+                navigator.notification.alert(event.alert);
+            }
+
+            if (event.sound) {
+                var snd = new Media(event.sound);
+                snd.play();
+            }
+
+            if (event.badge) {
+                pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+            }
+        };
+    </script>
     <div id="swappableContentOuter">
             
     
@@ -140,6 +156,7 @@
 
         document.addEventListener("deviceready", onDeviceReady, false);
 
+        
         
     </script>
     </div>
