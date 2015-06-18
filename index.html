@@ -75,41 +75,41 @@
 			console.log(msg);
 		};
 	}
-	
-        var onDeviceReady = function () {
-               
-            var conn = navigator.connection.type;
-            var states = {};
 
-            states[Connection.NONE] = 'No network connection';
-            states[Connection.WIFI] = 'WiFi connection';
-            if (states[conn] === 'No network connection') {
-                var msg = document.getElementById('message');
-                msg.innerHTML = "Check Your Connection"
-                msg.style.backgroundColor = "tomato";
-                msg.style.color = "white";
+	var onDeviceReady = function () {
 
-                //we will want to check for a new network connection in a second or so
-                setTimeout(onDeviceReady, 1000);
+	    var conn = navigator.connection.type;
+	    var states = {};
 
-                //we did not have a network connection so just get out
-                return;
-            };
-            
-            var baseURL = "";
+	    states[Connection.NONE] = 'No network connection';
+	    states[Connection.WIFI] = 'WiFi connection';
+	    if (states[conn] === 'No network connection') {
+	        var msg = document.getElementById('message');
+	        msg.innerHTML = "Check Your Connection"
+	        msg.style.backgroundColor = "tomato";
+	        msg.style.color = "white";
 
-            //production
-            // baseURL = ""
+	        //we will want to check for a new network connection in a second or so
+	        setTimeout(onDeviceReady, 1000);
 
-            //development
-            baseURL = "http://aptifymobilememberdev.radolo.com";
-            
-            var base = document.getElementsByTagName('base')[0];
-            var phoneBase = base.href;
-            
-            base.href = baseURL;
-            
-            var arr = ["/Kendo/js/jquery.min.js",
+	        //we did not have a network connection so just get out
+	        return;
+	    };
+
+	    var baseURL = "";
+
+	    //production
+	    // baseURL = ""
+
+	    //development
+	    baseURL = "http://aptifymobilememberdev.radolo.com";
+
+	    var base = document.getElementsByTagName('base')[0];
+	    var phoneBase = base.href;
+
+	    base.href = baseURL;
+
+	    var arr = ["/Kendo/js/jquery.min.js",
 			"/Kendo/js/kendo.all.min.js",
 			"/js/Aptify/Configuration/Aptify.Framework.Configuration.External.js",
 			"https://mobilememberdev.aptify.com/Aptify/script/jquery.signalR-2.0.2.min.js",
@@ -127,32 +127,68 @@
             "/js/Radolo.Common.js/radoloUniform.js",
             "/js/Radolo.Common.js/jquery.uniform.js",
             "/js/customAnimations.js",
-            //Helper must be loaded before API
+	    //Helper must be loaded before API
             "/js/Aptify.Mobile.Member.Helper.js",
             "/js/Aptify.Mobile.Member.API.js",
             "/js/GoogleFeedApi.js"
 			];
-			
-			
-		
-            
-			var loadScript = function (index) {
-				var s = document.createElement('script');
-				s.type = 'text/javascript';
-				s.async = false;
-				s.onload = function () {
-					if (index + 1 < arr.length) {
-						
-						loadScript(index + 1);
-					} else {
-						$.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
-					}
-				};
-				document.head.appendChild(s);
-				s.src = arr[index];
-			};
-			loadScript(0);
-        };
+
+	    var onNotificationGCM = function (e) {
+	        
+	        switch (e.event) {
+	            case 'registered':
+	                if (e.regid.length > 0) {
+	                    var token = e.regid;
+	                    
+	                    api.GetMobileDeviceIDByToken(token).done(function (ID) {
+
+	                        api.GetMobileDeviceByID(ID).done(function (geDevice) {
+	                            geDevice.PersonID = vm.person.ID;
+	                            geDevice.DeviceToken = token;
+	                            
+	                            geDevice.Platform = "android";
+
+	                            api.SaveMobileDevice(geDevice);
+
+	                        });
+
+	                    });
+	                }
+	                break;
+
+	            case 'message':
+	                // this is the actual push notification. its format depends on the data model from the push server
+	                alert('message = ' + e.message + ' msgcnt = ' + e.msgcnt);
+	                break;
+
+	            case 'error':
+	                alert('GCM error = ' + e.msg);
+	                break;
+
+	            default:
+	                alert('An unknown GCM event has occurred');
+	                break;
+	        }
+	    };
+
+
+	    var loadScript = function (index) {
+	        var s = document.createElement('script');
+	        s.type = 'text/javascript';
+	        s.async = false;
+	        s.onload = function () {
+	            if (index + 1 < arr.length) {
+
+	                loadScript(index + 1);
+	            } else {
+	                $.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
+	            }
+	        };
+	        document.head.appendChild(s);
+	        s.src = arr[index];
+	    };
+	    loadScript(0);
+	};
 
         document.addEventListener("deviceready", onDeviceReady, false);
 
