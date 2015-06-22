@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--
         Licensed to the Apache Software Foundation (ASF) under one
         or more contributor license agreements.  See the NOTICE file
@@ -21,17 +21,26 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="format-detection" content="telephone=no" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <!-- We need only local css for the first page here  -->
-    
-    
-    <title>Member Management</title>
- 
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+
+    <title>Mobile Member Management</title>
+
     <base />
 </head>
 <body>
+    <div class="app">
+       <div class="logo">
+        <img src="img/ADA-logo-login.svg"/>
+        </div>
+        <div class="loader">
+            <i></i><i></i><i></i>
+        </div>
+    </div>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript">
         var onNotificationAPN = function (event) {
@@ -50,150 +59,149 @@
         };
     </script>
     <div id="swappableContentOuter">
-            
-    
-    
+
+
     <script type="text/javascript">
         //IE hates the console unless it is open...
-	if (typeof (console) === 'undefined' || !console || !window.console) {
-		console = {
-			warn: function () { },
-			log: function () { }
-		};
-	}
-	if (!console.warn) {
-		console.warn = function () { };
-	}
-	if (!console.log) {
-		console.log = function () { };
-	}
-	if (typeof (showElapsedTime) === 'undefined') {
-		var showElapsedTime = function (title) {
-			startTime = typeof startTime === 'undefined' ? new Date().getTime() : startTime;
-			var elapsed = (new Date().getTime() - startTime);
-			var msg = (elapsed / 1000) + " : " + title;
-			console.log(msg);
-		};
-	}
+    if (typeof (console) === 'undefined' || !console || !window.console) {
+        console = {
+            warn: function () { },
+            log: function () { }
+        };
+    }
+    if (!console.warn) {
+        console.warn = function () { };
+    }
+    if (!console.log) {
+        console.log = function () { };
+    }
+    if (typeof (showElapsedTime) === 'undefined') {
+        var showElapsedTime = function (title) {
+            startTime = typeof startTime === 'undefined' ? new Date().getTime() : startTime;
+            var elapsed = (new Date().getTime() - startTime);
+            var msg = (elapsed / 1000) + " : " + title;
+            console.log(msg);
+        };
+    }
 
-	var onDeviceReady = function () {
+    var onDeviceReady = function () {
 
-	    var conn = navigator.connection.type;
-	    var states = {};
+        var conn = navigator.connection.type;
+        var states = {};
 
-	    states[Connection.NONE] = 'No network connection';
-	    states[Connection.WIFI] = 'WiFi connection';
-	    if (states[conn] === 'No network connection') {
-	        var msg = document.getElementById('message');
-	        msg.innerHTML = "Check Your Connection"
-	        msg.style.backgroundColor = "tomato";
-	        msg.style.color = "white";
+        states[Connection.NONE] = 'No network connection';
+        states[Connection.WIFI] = 'WiFi connection';
+        if (states[conn] === 'No network connection') {
+            var msg = document.getElementById('message');
+            msg.innerHTML = "Check Your Connection"
+            msg.style.backgroundColor = "tomato";
+            msg.style.color = "white";
 
-	        //we will want to check for a new network connection in a second or so
-	        setTimeout(onDeviceReady, 1000);
+            //we will want to check for a new network connection in a second or so
+            setTimeout(onDeviceReady, 1000);
 
-	        //we did not have a network connection so just get out
-	        return;
-	    };
+            //we did not have a network connection so just get out
+            return;
+        };
 
-	    var baseURL = "";
+        var baseURL = "";
 
-	    //production
-	    // baseURL = ""
+        //production
+        // baseURL = ""
 
-	    //development
-	    baseURL = "http://aptifymobilememberdev.radolo.com";
+        //development
+        baseURL = "http://aptifymobilememberdev.radolo.com";
 
-	    var base = document.getElementsByTagName('base')[0];
-	    var phoneBase = base.href;
+        var base = document.getElementsByTagName('base')[0];
+        var phoneBase = base.href;
 
-	    base.href = baseURL;
+        base.href = baseURL;
 
-	    var arr = ["/Kendo/js/jquery.min.js",
-			"/Kendo/js/kendo.all.min.js",
-			"/js/Aptify/Configuration/Aptify.Framework.Configuration.External.js",
-			"https://mobilememberdev.aptify.com/Aptify/script/jquery.signalR-2.0.2.min.js",
-			"https://mobilememberdev.aptify.com/Aptify/script/adapter.js",
-			"https://mobilememberdev.aptify.com/AptifyServicesAPI/signalr/hubs",
-			"/js/Aptify/framework/Aptify.Framework-5.5.2.11.all.js",
-			"/js/Aptify/applications/Aptify.Applications-5.5.2.11.all.js",
-			"/js/Radolo.Common.js/pubsub.js",
-			"/js/Radolo.Common.js/radoloDialog.js",
-			"/js/Radolo.Common.js/radoloCommon.js",
+        var arr = ["/Kendo/js/jquery.min.js",
+            "/Kendo/js/kendo.all.min.js",
+            "/js/Aptify/Configuration/Aptify.Framework.Configuration.External.js",
+            "https://mobilememberdev.aptify.com/Aptify/script/jquery.signalR-2.0.2.min.js",
+            "https://mobilememberdev.aptify.com/Aptify/script/adapter.js",
+            "https://mobilememberdev.aptify.com/AptifyServicesAPI/signalr/hubs",
+            "/js/Aptify/framework/Aptify.Framework-5.5.2.11.all.js",
+            "/js/Aptify/applications/Aptify.Applications-5.5.2.11.all.js",
+            "/js/Radolo.Common.js/pubsub.js",
+            "/js/Radolo.Common.js/radoloDialog.js",
+            "/js/Radolo.Common.js/radoloCommon.js",
             "/js/Radolo.Common.js/radoloInputPlaceholder.js",
             "/js/Radolo.Common.JS/radoloSimplePager.js",
-			"/js/Radolo.Common.js/radoloOfflineCache.js",
-			"/js/Radolo.Common.js/radoloRouter.js",
+            "/js/Radolo.Common.js/radoloOfflineCache.js",
+            "/js/Radolo.Common.js/radoloRouter.js",
             "/js/Radolo.Common.js/radoloUniform.js",
             "/js/Radolo.Common.js/jquery.uniform.js",
             "/js/customAnimations.js",
-	    //Helper must be loaded before API
+        //Helper must be loaded before API
             "/js/Aptify.Mobile.Member.Helper.js",
             "/js/Aptify.Mobile.Member.API.js",
             "/js/GoogleFeedApi.js"
-			];
+            ];
 
-	    var onNotificationGCM = function (e) {
-	        
-	        switch (e.event) {
-	            case 'registered':
-	                if (e.regid.length > 0) {
-	                    var token = e.regid;
-	                    
-	                    api.GetMobileDeviceIDByToken(token).done(function (ID) {
+        var onNotificationGCM = function (e) {
 
-	                        api.GetMobileDeviceByID(ID).done(function (geDevice) {
-	                            geDevice.PersonID = vm.person.ID;
-	                            geDevice.DeviceToken = token;
-	                            
-	                            geDevice.Platform = "android";
+            switch (e.event) {
+                case 'registered':
+                    if (e.regid.length > 0) {
+                        var token = e.regid;
 
-	                            api.SaveMobileDevice(geDevice);
+                        api.GetMobileDeviceIDByToken(token).done(function (ID) {
 
-	                        });
+                            api.GetMobileDeviceByID(ID).done(function (geDevice) {
+                                geDevice.PersonID = vm.person.ID;
+                                geDevice.DeviceToken = token;
 
-	                    });
-	                }
-	                break;
+                                geDevice.Platform = "android";
 
-	            case 'message':
-	                // this is the actual push notification. its format depends on the data model from the push server
-	                alert('message = ' + e.message + ' msgcnt = ' + e.msgcnt);
-	                break;
+                                api.SaveMobileDevice(geDevice);
 
-	            case 'error':
-	                alert('GCM error = ' + e.msg);
-	                break;
+                            });
 
-	            default:
-	                alert('An unknown GCM event has occurred');
-	                break;
-	        }
-	    };
+                        });
+                    }
+                    break;
+
+                case 'message':
+                    // this is the actual push notification. its format depends on the data model from the push server
+                    alert('message = ' + e.message + ' msgcnt = ' + e.msgcnt);
+                    break;
+
+                case 'error':
+                    alert('GCM error = ' + e.msg);
+                    break;
+
+                default:
+                    alert('An unknown GCM event has occurred');
+                    break;
+            }
+        };
 
 
-	    var loadScript = function (index) {
-	        var s = document.createElement('script');
-	        s.type = 'text/javascript';
-	        s.async = false;
-	        s.onload = function () {
-	            if (index + 1 < arr.length) {
+        var loadScript = function (index) {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = false;
+            s.onload = function () {
+                if (index + 1 < arr.length) {
 
-	                loadScript(index + 1);
-	            } else {
-	                $.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
-	            }
-	        };
-	        document.head.appendChild(s);
-	        s.src = arr[index];
-	    };
-	    loadScript(0);
-	};
+                    loadScript(index + 1);
+                } else {
+                    $.radoloRouter.loadUrl("Default.aspx", "swappableContentOuter");
+                }
+            };
+            document.head.appendChild(s);
+            s.src = arr[index];
+        };
+        loadScript(0);
+    };
 
         document.addEventListener("deviceready", onDeviceReady, false);
 
-        
-        
+
+
     </script>
     </div>
 </body>
